@@ -1,0 +1,95 @@
+<div class="garantias-container">
+  <!-- VISTA 1: TABLA GENERAL DE GARANTÍAS -->
+  <div *ngIf="!mostrarFormulario">
+    <div class="header-flex">
+      <h2>Gestión de Garantías</h2>
+      <button type="button" (click)="alternarVistaFormulario(true)" class="btn-primary">
+        + Registrar Nueva Garantía
+      </button>
+    </div>
+
+    <div class="table-card">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>ID Garantía</th>
+            <th>ID Detalle Venta</th>
+            <th>Duración</th>
+            <th>Tipo de Cobertura</th>
+            <th>Estado</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let garantia of garantiasRegistradas">
+            <td style="font-family: monospace; font-size: 0.85rem;">{{ garantia.id_garantia }}</td>
+            <td style="font-family: monospace; font-size: 0.85rem;">{{ garantia.id_detalle_venta }}</td>
+            <td>{{ garantia.duracion_meses }} meses</td>
+            <td>{{ garantia.tipo_cobertura }}</td>
+            <td>
+              <span [class.text-green]="garantia.estado_garantia === 'Activa'" [class.text-red]="garantia.estado_garantia !== 'Activa'">
+                {{ garantia.estado_garantia }}
+              </span>
+            </td>
+            <td class="text-center" style="display: flex; justify-content: center; gap: 0.5rem;">
+              <button type="button" (click)="abrirFormularioEdicion(garantia)" class="btn-secondary" style="padding: 0.3rem 0.7rem; font-size: 0.85rem;">Editar</button>
+              <button type="button" (click)="eliminarGarantia(garantia.id_garantia)" class="btn-danger" style="width: auto; height: auto; padding: 0.3rem 0.7rem; font-size: 0.85rem; border-radius: 6px;">Eliminar</button>
+            </td>
+          </tr>
+          <tr *ngIf="garantiasRegistradas.length === 0">
+            <td colspan="6" class="text-center" style="padding: 2rem; color: #6b7280;">
+              No hay garantías registradas actualmente.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- VISTA 2: FORMULARIO (CREAR / EDITAR) -->
+  <div *ngIf="mostrarFormulario" class="form-card">
+    <div class="form-header">
+      <h2>{{ modoEdicion ? 'Editar Garantía' : 'Registrar Nueva Garantía' }}</h2>
+      <button type="button" (click)="cancelarRegistro()" style="background:none; border:none; font-size: 1.25rem; cursor:pointer; color:#6b7280;">✕</button>
+    </div>
+    <p class="form-subtitle">Selecciona el detalle de venta asociado y especifica los detalles de cobertura.</p>
+
+    <form [formGroup]="garantiaForm" (ngSubmit)="guardarGarantia()">
+      <div class="form-group">
+        <label>Detalle de Venta Asociado</label>
+        <select formControlName="id_detalle_venta" class="form-control">
+          <option value="">Selecciona un detalle de venta</option>
+          <option *ngFor="let dv of detallesVentasDisponibles" [value]="dv.id_detalle">
+            Detalle ID: {{ dv.id_detalle }} - Venta: {{ dv.id_venta }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Duración (en meses)</label>
+        <input type="number" formControlName="duracion_meses" class="form-control" min="1" placeholder="Ej. 12">
+      </div>
+
+      <div class="form-group">
+        <label>Tipo de Cobertura</label>
+        <input type="text" formControlName="tipo_cobertura" class="form-control" placeholder="Ej. Defectos de fábrica">
+      </div>
+
+      <div class="form-group">
+        <label>Estado de la Garantía</label>
+        <select formControlName="estado_garantia" class="form-control">
+          <option value="Activa">Activa</option>
+          <option value="Expirada">Expirada</option>
+          <option value="Usada">Usada</option>
+        </select>
+      </div>
+
+      <div class="form-actions" style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button type="button" (click)="cancelarRegistro()" class="btn-secondary">Cancelar</button>
+        <button type="submit" [disabled]="garantiaForm.invalid" class="btn-primary">
+          {{ modoEdicion ? 'Actualizar Garantía' : 'Guardar Garantía' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
