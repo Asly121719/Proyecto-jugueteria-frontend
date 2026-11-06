@@ -1,0 +1,176 @@
+/* Estilos generales del Header */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 52px;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.nav-container {
+  max-width: 1280px;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+/* Logotipo */
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #1d1d1f;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.logo-icon {
+  font-size: 18px;
+}
+
+/* Menú de navegación superior */
+.nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 100%;
+  overflow-x: auto;
+  scrollbar-width: none; /* Ocultar scroll en Firefox */
+}
+
+.nav-menu::-webkit-scrollbar {
+  display: none; /* Ocultar scroll en Chrome/Safari */
+}
+
+.nav-item-wrapper {
+  position: relative; /* CRUCIAL: Mantiene el menú anclado al botón superior */
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.nav-link {
+  color: #424245;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 0 10px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  color: #0369f7;
+}
+
+/* Panel Desplegable (Dropdown Estilo Apple) */
+.dropdown-panel {
+  position: absolute;
+  top: 52px; /* Justo debajo de la barra de navegación */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  padding: 16px;
+  z-index: 9999; /* Asegura que esté por encima de todo el contenido */
+  animation: fadeInDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dropdown-header h4 {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #86868b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #f5f5f7;
+  padding-bottom: 8px;
+}
+
+.dropdown-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Opciones individuales del menú desplegable */
+.dropdown-action-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.dropdown-action-item:hover {
+  background-color: #f5f5f7;
+}
+
+.dropdown-action-item:active {
+  transform: scale(0.98);
+}
+
+.action-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  background-color: #f0f0f2;
+}
+
+.action-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.action-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1d1d1f;
+}
+
+.action-desc {
+  font-size: 11px;
+  color: #86868b;
+}
+
+/* Área de Contenido Principal (Margen superior para que no lo tape el header fijo) */
+.main-content {
+  margin-top: 52px;
+  padding: 30px;
+  min-height: calc(100vh - 52px);
+  background-color: #fbfbfd;
+}
+
+/* Animación de aparición suave */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
