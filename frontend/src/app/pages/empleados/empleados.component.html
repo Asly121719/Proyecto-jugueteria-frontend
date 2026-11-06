@@ -1,0 +1,116 @@
+<div class="juguetes-container">
+  
+  <div class="page-header">
+    <div>
+      <h2>Gestión de Empleados</h2>
+      <p class="subtitle">Administra el personal vinculado a las sucursales de la juguetería.</p>
+    </div>
+    <button *ngIf="!modoFormulario" class="btn-primary" (click)="abrirCrear()">
+      ➕ Nuevo Empleado
+    </button>
+  </div>
+
+  <!-- VISTA 1: TABLA DE EMPLEADOS -->
+  <div *ngIf="!modoFormulario" class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nombre y Apellido</th>
+          <th>Correo Electrónico</th>
+          <th>Sucursal</th>
+          <th>Cargo</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let emp of empleados">
+          <td class="font-medium">{{ emp.nombre }} {{ emp.apellido }}</td>
+          <td class="text-muted">{{ emp.correo_electronico }}</td>
+          <td>{{ obtenerNombreSucursal(emp.id_tienda) }}</td>
+          <td>{{ obtenerNombreCargo(emp.id_cargo) }}</td>
+          <td class="text-right actions-cell">
+            <button class="btn-icon" (click)="editarEmpleado(emp)" title="Editar">✏️</button>
+            <button class="btn-icon delete" (click)="eliminarEmpleado(emp.id_empleado)" title="Eliminar">🗑️</button>
+          </td>
+        </tr>
+        <tr *ngIf="empleados.length === 0">
+          <td colspan="5" class="empty-state">No hay empleados registrados en la base de datos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VISTA 2: FORMULARIO DE CREACIÓN / EDICIÓN -->
+  <div *ngIf="modoFormulario" class="form-card">
+    <div class="form-header">
+      <h3>{{ esEdicion ? 'Editar Empleado' : 'Registrar Nuevo Empleado' }}</h3>
+      <p>Completa la información corporativa seleccionando las opciones correspondientes.</p>
+    </div>
+
+    <form (ngSubmit)="guardarEmpleado()" class="entity-form">
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input 
+            type="text" 
+            id="nombre" 
+            [(ngModel)]="empleadoActual.nombre" 
+            name="nombre" 
+            required 
+            placeholder="Ej. Carlos">
+        </div>
+
+        <div class="form-group">
+          <label for="apellido">Apellido</label>
+          <input 
+            type="text" 
+            id="apellido" 
+            [(ngModel)]="empleadoActual.apellido" 
+            name="apellido" 
+            required 
+            placeholder="Ej. Pérez">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="correo_electronico">Correo Electrónico</label>
+        <input 
+          type="email" 
+          id="correo_electronico" 
+          [(ngModel)]="empleadoActual.correo_electronico" 
+          name="correo_electronico" 
+          required 
+          placeholder="Ej. carlos.perez@toystore.com">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="id_tienda">Sucursal (Tienda)</label>
+          <select id="id_tienda" [(ngModel)]="empleadoActual.id_tienda" name="id_tienda" required class="form-select">
+            <option value="" disabled>Selecciona una sucursal</option>
+            <option *ngFor="let tienda of tiendas" [value]="tienda.id_tienda">
+              {{ tienda.nombre_sucursal }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="id_cargo">Cargo</label>
+          <select id="id_cargo" [(ngModel)]="empleadoActual.id_cargo" name="id_cargo" required class="form-select">
+            <option value="" disabled>Selecciona un cargo</option>
+            <option *ngFor="let cargo of cargos" [value]="cargo.id_cargo">
+              {{ cargo.titulo_cargo }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar Empleado</button>
+      </div>
+    </form>
+  </div>
+
+</div>
