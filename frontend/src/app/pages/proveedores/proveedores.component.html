@@ -1,0 +1,105 @@
+<div class="juguetes-container">
+  
+  <div class="page-header">
+    <div>
+      <h2>Gestión de Proveedores</h2>
+      <p class="subtitle">Administra la información corporativa y de contacto de los proveedores.</p>
+    </div>
+    <button *ngIf="!modoFormulario" class="btn-primary" (click)="abrirCrear()">
+      ➕ Nuevo Proveedor
+    </button>
+  </div>
+
+  <!-- VISTA 1: TABLA DE PROVEEDORES -->
+  <div *ngIf="!modoFormulario" class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Razón Social</th>
+          <th>Nombre de Contacto</th>
+          <th>Teléfono</th>
+          <th>País de Origen</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let prov of proveedores">
+          <td class="font-medium">{{ prov.razon_social }}</td>
+          <td>{{ prov.nombre_contacto }}</td>
+          <td class="font-mono">{{ prov.telefono }}</td>
+          <td><span class="badge-pais">{{ prov.pais_origen }}</span></td>
+          <td class="text-right actions-cell">
+            <button class="btn-icon" (click)="editarProveedor(prov)" title="Editar">✏️</button>
+            <button class="btn-icon delete" (click)="eliminarProveedor(prov.id_proveedor)" title="Eliminar">🗑️</button>
+          </td>
+        </tr>
+        <tr *ngIf="proveedores.length === 0">
+          <td colspan="5" class="empty-state">No hay proveedores registrados en la base de datos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VISTA 2: FORMULARIO DE CREACIÓN / EDICIÓN -->
+  <div *ngIf="modoFormulario" class="form-card">
+    <div class="form-header">
+      <h3>{{ esEdicion ? 'Editar Proveedor' : 'Registrar Nuevo Proveedor' }}</h3>
+      <p>Completa la información corporativa y de origen del proveedor.</p>
+    </div>
+
+    <form (ngSubmit)="guardarProveedor()" class="entity-form">
+      
+      <div class="form-group">
+        <label for="razon_social">Razón Social</label>
+        <input 
+          type="text" 
+          id="razon_social" 
+          [(ngModel)]="proveedorActual.razon_social" 
+          name="razon_social" 
+          required 
+          placeholder="Ej. Mattel Colombia S.A.S.">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombre_contacto">Nombre de Contacto</label>
+          <input 
+            type="text" 
+            id="nombre_contacto" 
+            [(ngModel)]="proveedorActual.nombre_contacto" 
+            name="nombre_contacto" 
+            required 
+            placeholder="Ej. Carlos Pérez">
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Teléfono</label>
+          <input 
+            type="text" 
+            id="telefono" 
+            [(ngModel)]="proveedorActual.telefono" 
+            name="telefono" 
+            required 
+            placeholder="Ej. +57 310 9876543">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="pais_origen">País de Origen</label>
+        <input 
+          type="text" 
+          id="pais_origen" 
+          [(ngModel)]="proveedorActual.pais_origen" 
+          name="pais_origen" 
+          required 
+          placeholder="Ej. Estados Unidos / Colombia / China">
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar Proveedor</button>
+      </div>
+    </form>
+  </div>
+
+</div>
