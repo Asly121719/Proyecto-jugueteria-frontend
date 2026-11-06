@@ -1,0 +1,106 @@
+<div class="juguetes-container">
+  
+  <div class="page-header">
+    <div>
+      <h2>Gestión de Clientes</h2>
+      <p class="subtitle">Administra la información de contacto y registro de los clientes.</p>
+    </div>
+    <button *ngIf="!modoFormulario" class="btn-primary" (click)="abrirCrear()">
+      ➕ Nuevo Cliente
+    </button>
+  </div>
+
+  <!-- VISTA 1: TABLA DE CLIENTES -->
+  <div *ngIf="!modoFormulario" class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Correo Electrónico</th>
+          <th>Teléfono</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cliente of clientes">
+          <td class="font-medium">{{ cliente.nombre }}</td>
+          <td>{{ cliente.apellido }}</td>
+          <td class="text-muted">{{ cliente.correo_electronico }}</td>
+          <td class="font-mono">{{ cliente.telefono }}</td>
+          <td class="text-right actions-cell">
+            <button class="btn-icon" (click)="editarCliente(cliente)" title="Editar">✏️</button>
+            <button class="btn-icon delete" (click)="eliminarCliente(cliente.id_cliente)" title="Eliminar">🗑️</button>
+          </td>
+        </tr>
+        <tr *ngIf="clientes.length === 0">
+          <td colspan="5" class="empty-state">No hay clientes registrados en la base de datos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VISTA 2: FORMULARIO DE CREACIÓN / EDICIÓN -->
+  <div *ngIf="modoFormulario" class="form-card">
+    <div class="form-header">
+      <h3>{{ esEdicion ? 'Editar Cliente' : 'Registrar Nuevo Cliente' }}</h3>
+      <p>Completa la información personal y de contacto del cliente en casillas separadas.</p>
+    </div>
+
+    <form (ngSubmit)="guardarCliente()" class="entity-form">
+      
+      <!-- Fila separada: Casilla de Nombre y Casilla de Apellido -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input 
+            type="text" 
+            id="nombre" 
+            [(ngModel)]="clienteActual.nombre" 
+            name="nombre" 
+            required 
+            placeholder="Ej. Sofía">
+        </div>
+
+        <div class="form-group">
+          <label for="apellido">Apellido</label>
+          <input 
+            type="text" 
+            id="apellido" 
+            [(ngModel)]="clienteActual.apellido" 
+            name="apellido" 
+            required 
+            placeholder="Ej. Gómez">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="correo_electronico">Correo Electrónico</label>
+        <input 
+          type="email" 
+          id="correo_electronico" 
+          [(ngModel)]="clienteActual.correo_electronico" 
+          name="correo_electronico" 
+          required 
+          placeholder="Ej. sofia.gomez@email.com">
+      </div>
+
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input 
+          type="text" 
+          id="telefono" 
+          [(ngModel)]="clienteActual.telefono" 
+          name="telefono" 
+          required 
+          placeholder="Ej. +57 300 1234567">
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar Cliente</button>
+      </div>
+    </form>
+  </div>
+
+</div>
