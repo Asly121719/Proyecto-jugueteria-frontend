@@ -1,0 +1,108 @@
+<div class="juguetes-container">
+  
+  <div class="page-header">
+    <div>
+      <h2>Gestión de Categorías</h2>
+      <p class="subtitle">Administra las clasificaciones, descripciones y especificaciones de las categorías.</p>
+    </div>
+    <button *ngIf="!modoFormulario" class="btn-primary" (click)="abrirCrear()">
+      ➕ Nueva Categoría
+    </button>
+  </div>
+
+  <!-- VISTA 1: TABLA DE CATEGORÍAS -->
+  <div *ngIf="!modoFormulario" class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nombre Categoría</th>
+          <th>Descripción</th>
+          <th>Edad Recomendada</th>
+          <th>¿Es Eléctrico?</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cat of categorias">
+          <td class="font-medium">{{ cat.nombre_categoria }}</td>
+          <td class="text-muted">{{ cat.descripcion }}</td>
+          <td>{{ cat.edad_recomendada }}</td>
+          <td>
+            <span [class]="cat.es_electrico ? 'badge-yes' : 'badge-no'">
+              {{ cat.es_electrico ? 'Sí' : 'No' }}
+            </span>
+          </td>
+          <td class="text-right actions-cell">
+            <button class="btn-icon" (click)="editarCategoria(cat)" title="Editar">✏️</button>
+            <button class="btn-icon delete" (click)="eliminarCategoria(cat.id_categoria)" title="Eliminar">🗑️</button>
+          </td>
+        </tr>
+        <tr *ngIf="categorias.length === 0">
+          <td colspan="5" class="empty-state">No hay categorías registradas en la base de datos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VISTA 2: FORMULARIO DE CREACIÓN / EDICIÓN -->
+  <div *ngIf="modoFormulario" class="form-card">
+    <div class="form-header">
+      <h3>{{ esEdicion ? 'Editar Categoría' : 'Registrar Nueva Categoría' }}</h3>
+      <p>Completa los detalles de la categoría.</p>
+    </div>
+
+    <form (ngSubmit)="guardarCategoria()" class="entity-form">
+      
+      <div class="form-group">
+        <label for="nombre_categoria">Nombre de la Categoría</label>
+        <input 
+          type="text" 
+          id="nombre_categoria" 
+          [(ngModel)]="categoriaActual.nombre_categoria" 
+          name="nombre_categoria" 
+          required 
+          placeholder="Ej. Carros a Control Remoto">
+      </div>
+
+      <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <textarea 
+          id="descripcion" 
+          [(ngModel)]="categoriaActual.descripcion" 
+          name="descripcion" 
+          required 
+          rows="3"
+          placeholder="Describe la categoría..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="edad_recomendada">Edad Recomendada</label>
+          <input 
+            type="text" 
+            id="edad_recomendada" 
+            [(ngModel)]="categoriaActual.edad_recomendada" 
+            name="edad_recomendada" 
+            required 
+            placeholder="Ej. +8 años">
+        </div>
+
+        <div class="form-group checkbox-group" style="justify-content: center; padding-top: 20px;">
+          <label class="checkbox-label">
+            <input 
+              type="checkbox" 
+              [(ngModel)]="categoriaActual.es_electrico" 
+              name="es_electrico">
+            <span>¿Es Eléctrico?</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar Categoría</button>
+      </div>
+    </form>
+  </div>
+
+</div>
