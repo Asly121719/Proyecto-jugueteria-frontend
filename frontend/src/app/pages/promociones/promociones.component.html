@@ -1,0 +1,143 @@
+<div class="juguetes-container">
+  
+  <div class="page-header">
+    <div>
+      <h2>Gestión de Promociones</h2>
+      <p class="subtitle">Administra campañas de descuento y asígnalas a tus juguetes.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary" (click)="pestanaActiva = (pestanaActiva === 'promociones' ? 'asignar' : 'promociones')">
+        {{ pestanaActiva === 'promociones' ? '🔗 Asignar a Juguetes' : '📋 Ver Promociones' }}
+      </button>
+      <button *ngIf="!modoFormulario && pestanaActiva === 'promociones'" class="btn-primary" (click)="abrirCrear()">
+        ➕ Nueva Promoción
+      </button>
+    </div>
+  </div>
+
+  <!-- VISTA 1: TABLA DE PROMOCIONES -->
+  <div *ngIf="!modoFormulario && pestanaActiva === 'promociones'" class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Campaña</th>
+          <th>Descuento</th>
+          <th>Fecha Inicio</th>
+          <th>Fecha Fin</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let promo of promociones">
+          <td class="font-medium">{{ promo.nombre_campana }}</td>
+          <td><span class="badge-discount">-{{ promo.porcentaje_descuento }}%</span></td>
+          <td>{{ promo.fecha_inicio }}</td>
+          <td>{{ promo.fecha_fin }}</td>
+          <td class="text-right actions-cell">
+            <button class="btn-icon" (click)="editarPromocion(promo)" title="Editar">✏️</button>
+            <button class="btn-icon delete" (click)="eliminarPromocion(promo.id_promocion)" title="Eliminar">🗑️</button>
+          </td>
+        </tr>
+        <tr *ngIf="promociones.length === 0">
+          <td colspan="5" class="empty-state">No hay promociones registradas.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VISTA 2: ASIGNAR PROMOCIÓN A JUGUETE -->
+  <div *ngIf="!modoFormulario && pestanaActiva === 'asignar'" class="form-card">
+    <div class="form-header">
+      <h3>Asignar Promoción a Juguete</h3>
+      <p>Selecciona la campaña y el producto para vincularlos en la base de datos.</p>
+    </div>
+
+    <form (ngSubmit)="guardarAsignacion()" class="entity-form">
+      <div class="form-group">
+        <label for="id_promocion">Promoción / Campaña</label>
+        <select id="id_promocion" [(ngModel)]="asignacionActual.id_promocion" name="id_promocion" required>
+          <option value="" disabled>Selecciona una promoción</option>
+          <option *ngFor="let p of promociones" [value]="p.id_promocion">
+            {{ p.nombre_campana }} ({{ p.porcentaje_descuento }}% off)
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="id_juguete">Juguete</label>
+        <select id="id_juguete" [(ngModel)]="asignacionActual.id_juguete" name="id_juguete" required>
+          <option value="" disabled>Selecciona un juguete</option>
+          <option *ngFor="let j of juguetes" [value]="j.id_juguete">
+            {{ j.nombre_producto }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">Vincular Promoción</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- VISTA 3: FORMULARIO CREAR / EDITAR PROMOCIÓN -->
+  <div *ngIf="modoFormulario" class="form-card">
+    <div class="form-header">
+      <h3>{{ esEdicion ? 'Editar Promoción' : 'Nueva Promoción' }}</h3>
+      <p>Configura los detalles de la campaña de descuento.</p>
+    </div>
+
+    <form (ngSubmit)="guardarPromocion()" class="entity-form">
+      <div class="form-group">
+        <label for="nombre_campana">Nombre de Campaña</label>
+        <input 
+          type="text" 
+          id="nombre_campana" 
+          [(ngModel)]="promocionActual.nombre_campana" 
+          name="nombre_campana" 
+          required 
+          placeholder="Ej. Rebajas de Verano">
+      </div>
+
+      <div class="form-group">
+        <label for="porcentaje_descuento">Porcentaje de Descuento (%)</label>
+        <input 
+          type="number" 
+          id="porcentaje_descuento" 
+          [(ngModel)]="promocionActual.porcentaje_descuento" 
+          name="porcentaje_descuento" 
+          required 
+          min="1" 
+          max="100" 
+          placeholder="Ej. 20">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fecha_inicio">Fecha Inicio</label>
+          <input 
+            type="date" 
+            id="fecha_inicio" 
+            [(ngModel)]="promocionActual.fecha_inicio" 
+            name="fecha_inicio" 
+            required>
+        </div>
+
+        <div class="form-group">
+          <label for="fecha_fin">Fecha Fin</label>
+          <input 
+            type="date" 
+            id="fecha_fin" 
+            [(ngModel)]="promocionActual.fecha_fin" 
+            name="fecha_fin" 
+            required>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar Promoción</button>
+      </div>
+    </form>
+  </div>
+
+</div>
