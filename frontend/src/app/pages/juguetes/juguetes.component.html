@@ -1,0 +1,122 @@
+<div class="juguetes-container">
+  
+  <div class="page-header">
+    <div>
+      <h2>Gestión de Juguetes</h2>
+      <p class="subtitle">Administra los productos conectados a la base de datos con relaciones completas.</p>
+    </div>
+    <button *ngIf="!modoFormulario" class="btn-primary" (click)="abrirCrear()">
+      ➕ Nuevo Juguete
+    </button>
+  </div>
+
+  <!-- VISTA 1: TABLA DE JUGUETES -->
+  <div *ngIf="!modoFormulario" class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nombre del Producto</th>
+          <th>Categoría</th>
+          <th>Proveedor</th>
+          <th>Precio Unitario</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let juguete of juguetes">
+          <td class="font-medium">{{ juguete.nombre_producto }}</td>
+          <td>
+            <span class="category-badge">
+              {{ obtenerNombreCategoria(juguete.id_categoria) }}
+            </span>
+          </td>
+          <td>
+            <span class="provider-badge">
+              {{ obtenerRazonSocialProveedor(juguete.id_proveedor) }}
+            </span>
+          </td>
+          <td>${{ juguete.precio_unitario | number }}</td>
+          <td class="text-right actions-cell">
+            <button class="btn-icon" (click)="editarJuguete(juguete)" title="Editar">✏️</button>
+            <button class="btn-icon delete" (click)="eliminarJuguete(juguete.id_juguete)" title="Eliminar">🗑️</button>
+          </td>
+        </tr>
+        <tr *ngIf="juguetes.length === 0">
+          <td colspan="5" class="empty-state">No hay juguetes registrados en la base de datos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VISTA 2: FORMULARIO -->
+  <div *ngIf="modoFormulario" class="form-card">
+    <div class="form-header">
+      <h3>{{ esEdicion ? 'Editar Juguete' : 'Crear Nuevo Juguete' }}</h3>
+      <p>Selecciona las relaciones y completa los datos del producto.</p>
+    </div>
+
+    <form (ngSubmit)="guardarJuguete()" class="entity-form">
+      
+      <div class="form-group">
+        <label for="nombre_producto">Nombre del Producto</label>
+        <input 
+          type="text" 
+          id="nombre_producto" 
+          [(ngModel)]="jugueteActual.nombre_producto" 
+          name="nombre_producto" 
+          required 
+          placeholder="Ej. Carro de fricción">
+      </div>
+
+      <div class="form-row">
+        <!-- SELECT DE CATEGORÍAS -->
+        <div class="form-group">
+          <label for="id_categoria">Categoría</label>
+          <select 
+            id="id_categoria" 
+            [(ngModel)]="jugueteActual.id_categoria" 
+            name="id_categoria" 
+            required>
+            <option value="" disabled selected>Selecciona una categoría</option>
+            <option *ngFor="let cat of categorias" [value]="cat.id_categoria">
+              {{ cat.nombre_categoria }}
+            </option>
+          </select>
+        </div>
+
+        <!-- SELECT DE PROVEEDORES USANDO RAZÓN SOCIAL -->
+        <div class="form-group">
+          <label for="id_proveedor">Proveedor</label>
+          <select 
+            id="id_proveedor" 
+            [(ngModel)]="jugueteActual.id_proveedor" 
+            name="id_proveedor" 
+            required>
+            <option value="" disabled selected>Selecciona un proveedor</option>
+            <option *ngFor="let prov of proveedores" [value]="prov.id_proveedor">
+              {{ prov.razon_social }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="precio_unitario">Precio Unitario ($)</label>
+        <input 
+          type="number" 
+          id="precio_unitario" 
+          [(ngModel)]="jugueteActual.precio_unitario" 
+          name="precio_unitario" 
+          required 
+          min="0"
+          step="0.01">
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar Juguete</button>
+      </div>
+    </form>
+  </div>
+
+</div>
