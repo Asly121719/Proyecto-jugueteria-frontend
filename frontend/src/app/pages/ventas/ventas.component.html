@@ -1,0 +1,123 @@
+<div class="ventas-container">
+  <!-- VISTA 1: TABLA GENERAL DE VENTAS -->
+  <div *ngIf="!mostrarFormulario">
+    <div class="header-flex">
+      <h2>Gestión de Ventas</h2>
+      <button type="button" (click)="abrirFormularioRegistro()" class="btn-primary">
+        + Registrar Nueva Venta
+      </button>
+    </div>
+
+    <div class="table-card">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>ID Venta</th>
+            <th>Fecha y Hora</th>
+            <th>Total</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let venta of ventasRegistradas">
+            <td style="font-family: monospace; font-size: 0.85rem;">{{ venta.id_venta }}</td>
+            <td>{{ venta.fecha_hora_venta }}</td>
+            <td class="text-green">$ {{ venta.total }}</td>
+            <td class="text-center" style="display: flex; justify-content: center; gap: 0.5rem;">
+              <button type="button" (click)="abrirFormularioEdicion(venta)" class="btn-secondary" style="padding: 0.3rem 0.7rem; font-size: 0.85rem;">Editar</button>
+              <button type="button" (click)="eliminarVenta(venta.id_venta)" class="btn-danger" style="width: auto; height: auto; padding: 0.3rem 0.7rem; font-size: 0.85rem; border-radius: 6px;">Eliminar</button>
+            </td>
+          </tr>
+          <tr *ngIf="ventasRegistradas.length === 0">
+            <td colspan="4" class="text-center" style="padding: 2rem; color: #6b7280;">
+              No hay ventas registradas actualmente.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- VISTA 2: FORMULARIO DE REGISTRO / EDICIÓN -->
+  <div *ngIf="mostrarFormulario" class="form-card">
+    <div class="form-header">
+      <h2>{{ modoEdicion ? 'Editar Venta' : 'Registrar Nueva Venta' }}</h2>
+      <button type="button" (click)="cancelarRegistro()" style="background:none; border:none; font-size: 1.25rem; cursor:pointer; color:#6b7280;">✕</button>
+    </div>
+    <p class="form-subtitle">Selecciona la tienda, el empleado, el cliente y los juguetes de la transacción.</p>
+
+    <form [formGroup]="ventaForm" (ngSubmit)="guardarVenta()">
+      <div class="form-group">
+        <label>Tienda (Sucursal)</label>
+        <select formControlName="id_tienda" class="form-control">
+          <option value="">Selecciona una sucursal</option>
+          <option *ngFor="let t of tiendas" [value]="t.id_tienda">{{ t.nombre_sucursal }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Empleado</label>
+        <select formControlName="id_empleado" class="form-control">
+          <option value="">Selecciona un empleado</option>
+          <option *ngFor="let e of empleados" [value]="e.id_empleado">{{ e.nombre }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Cliente</label>
+        <select formControlName="id_cliente" class="form-control">
+          <option value="">Selecciona un cliente</option>
+          <option *ngFor="let c of clientes" [value]="c.id_cliente">{{ c.nombre }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Fecha y Hora</label>
+        <input type="datetime-local" formControlName="fecha_hora_venta" class="form-control">
+      </div>
+
+      <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #e5e7eb;">
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="margin: 0; font-size: 1.1rem; color: #374151;">Productos de la Venta</h3>
+        <button type="button" (click)="agregarFilaDetalle()" class="btn-secondary" style="background-color: #059669; color: white;">
+          + Agregar Juguete
+        </button>
+      </div>
+
+      <div formArrayName="detalles">
+        <div *ngFor="let detalle of detalles.controls; let i = index" [formGroupName]="i" style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem;">
+          <div style="flex: 2;">
+            <select formControlName="id_juguete" class="form-control">
+              <option value="">Selecciona un juguete</option>
+              <option *ngFor="let j of juguetesDisponibles" [value]="j.id_juguete">
+                {{ j.nombre_producto }} - $ {{ j.precio_unitario }}
+              </option>
+            </select>
+          </div>
+
+          <div style="flex: 1;">
+            <input type="number" formControlName="cantidad_comprada" placeholder="Cant." class="form-control" min="1">
+          </div>
+
+          <button type="button" (click)="eliminarFilaDetalle(i)" class="btn-danger" style="padding: 0.75rem; border-radius: 8px;">✕</button>
+        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem; display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+        <div style="font-size: 0.95rem; color: #4b5563;">Subtotal: $ {{ calcularSubtotal() | number:'1.2-2' }}</div>
+        <div style="font-size: 0.95rem; color: #dc2626;">Descuento Promociones: - $ {{ calcularDescuentoTotal() | number:'1.2-2' }}</div>
+        <div style="font-size: 1.25rem; font-weight: 700; color: #16a34a; border-top: 1px solid #e5e7eb; padding-top: 0.5rem; width: 100%; text-align: right;">
+          Total a Pagar: $ {{ calcularTotalFinal() | number:'1.2-2' }}
+        </div>
+        
+        <div style="margin-top: 1rem; width: 100%; display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" (click)="cancelarRegistro()" class="btn-secondary">Cancelar</button>
+          <button type="submit" [disabled]="ventaForm.invalid" class="btn-primary">
+            {{ modoEdicion ? 'Actualizar Venta' : 'Guardar Venta' }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
