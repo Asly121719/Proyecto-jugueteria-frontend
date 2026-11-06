@@ -1,0 +1,105 @@
+<div class="juguetes-container">
+  
+  <div class="page-header">
+    <div>
+      <h2>Gestión de Tiendas</h2>
+      <p class="subtitle">Administra los puntos de venta conectados directamente al backend.</p>
+    </div>
+    <button *ngIf="!modoFormulario" class="btn-primary" (click)="abrirCrear()">
+      ➕ Nueva Tienda
+    </button>
+  </div>
+
+  <!-- VISTA 1: TABLA DE TIENDAS -->
+  <div *ngIf="!modoFormulario" class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nombre Sucursal</th>
+          <th>Dirección</th>
+          <th>Teléfono</th>
+          <th>Horario de Apertura</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tienda of tiendas">
+          <td class="font-medium">{{ tienda.nombre_sucursal }}</td>
+          <td>{{ tienda.direccion }}</td>
+          <td class="text-muted font-mono">{{ tienda.telefono }}</td>
+          <td>{{ tienda.horario_apertura }}</td>
+          <td class="text-right actions-cell">
+            <button class="btn-icon" (click)="editarTienda(tienda)" title="Editar">✏️</button>
+            <button class="btn-icon delete" (click)="eliminarTienda(tienda.id_tienda)" title="Eliminar">🗑️</button>
+          </td>
+        </tr>
+        <tr *ngIf="tiendas.length === 0">
+          <td colspan="5" class="empty-state">No hay tiendas registradas en la base de datos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VISTA 2: FORMULARIO DE CREACIÓN / EDICIÓN -->
+  <div *ngIf="modoFormulario" class="form-card">
+    <div class="form-header">
+      <h3>{{ esEdicion ? 'Editar Tienda' : 'Crear Nueva Tienda' }}</h3>
+      <p>Completa los atributos requeridos por el sistema para el punto de venta.</p>
+    </div>
+
+    <form (ngSubmit)="guardarTienda()" class="entity-form">
+      
+      <div class="form-group">
+        <label for="nombre_sucursal">Nombre de la Sucursal</label>
+        <input 
+          type="text" 
+          id="nombre_sucursal" 
+          [(ngModel)]="tiendaActual.nombre_sucursal" 
+          name="nombre_sucursal" 
+          required 
+          placeholder="Ej. Sucursal Central Castilla">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="direccion">Dirección</label>
+          <input 
+            type="text" 
+            id="direccion" 
+            [(ngModel)]="tiendaActual.direccion" 
+            name="direccion" 
+            required 
+            placeholder="Ej. Calle 92 # 68-12">
+        </div>
+
+        <div class="form-group">
+          <label for="telefono">Teléfono</label>
+          <input 
+            type="text" 
+            id="telefono" 
+            [(ngModel)]="tiendaActual.telefono" 
+            name="telefono" 
+            required 
+            placeholder="Ej. 3001234567">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="horario_apertura">Horario de Apertura</label>
+        <input 
+          type="text" 
+          id="horario_apertura" 
+          [(ngModel)]="tiendaActual.horario_apertura" 
+          name="horario_apertura" 
+          required 
+          placeholder="Ej. Lunes a Sábado 9:00 AM - 7:00 PM">
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar Tienda</button>
+      </div>
+    </form>
+  </div>
+
+</div>
