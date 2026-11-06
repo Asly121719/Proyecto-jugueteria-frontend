@@ -1,0 +1,113 @@
+<div class="juguetes-container">
+  
+  <div class="page-header">
+    <div>
+      <h2>Control de Inventario en Tiendas</h2>
+      <p class="subtitle">Administra el stock disponible y la ubicación en pasillos por sucursal.</p>
+    </div>
+    <button *ngIf="!modoFormulario" class="btn-primary" (click)="abrirCrear()">
+      ➕ Nuevo Registro de Inventario
+    </button>
+  </div>
+
+  <!-- VISTA 1: TABLA DE INVENTARIO -->
+  <div *ngIf="!modoFormulario" class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Sucursal</th>
+          <th>Juguete</th>
+          <th>Stock Actual</th>
+          <th>Pasillo de Ubicación</th>
+          <th class="text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of inventarios">
+          <!-- 👈 Mostramos los nombres en lugar de los UUIDs -->
+          <td class="font-medium">{{ obtenerNombreTienda(item.id_tienda) }}</td>
+          <td class="font-medium">{{ obtenerNombreJuguete(item.id_juguete) }}</td>
+          <td><span class="badge-stock">{{ item.stock_actual }} unidades</span></td>
+          <td class="font-medium">{{ item.pasillo_ubicacion }}</td>
+          <td class="text-right actions-cell">
+            <button class="btn-icon" (click)="editarInventario(item)" title="Editar">✏️</button>
+            <button class="btn-icon delete" (click)="eliminarInventario(item.id_inventario)" title="Eliminar">🗑️</button>
+          </td>
+        </tr>
+        <tr *ngIf="inventarios.length === 0">
+          <td colspan="5" class="empty-state">No hay registros de inventario en la base de datos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VISTA 2: FORMULARIO DE CREACIÓN / EDICIÓN -->
+  <div *ngIf="modoFormulario" class="form-card">
+    <div class="form-header">
+      <h3>{{ esEdicion ? 'Editar Inventario' : 'Registrar Nuevo Inventario' }}</h3>
+      <p>Selecciona la tienda, el juguete y define las cantidades y pasillo.</p>
+    </div>
+
+    <form (ngSubmit)="guardarInventario()" class="entity-form">
+      
+      <div class="form-group">
+        <label for="id_tienda">Tienda (Sucursal)</label>
+        <select 
+          id="id_tienda" 
+          [(ngModel)]="inventarioActual.id_tienda" 
+          name="id_tienda" 
+          required>
+          <option value="" disabled>Selecciona una sucursal</option>
+          <option *ngFor="let tienda of tiendas" [value]="tienda.id_tienda">
+            {{ tienda.nombre_sucursal }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="id_juguete">Juguete (Producto)</label>
+        <select 
+          id="id_juguete" 
+          [(ngModel)]="inventarioActual.id_juguete" 
+          name="id_juguete" 
+          required>
+          <option value="" disabled>Selecciona un producto</option>
+          <option *ngFor="let juguete of juguetes" [value]="juguete.id_juguete">
+            {{ juguete.nombre_producto }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="stock_actual">Stock Actual</label>
+          <input 
+            type="number" 
+            id="stock_actual" 
+            [(ngModel)]="inventarioActual.stock_actual" 
+            name="stock_actual" 
+            required 
+            min="0"
+            placeholder="Ej. 25">
+        </div>
+
+        <div class="form-group">
+          <label for="pasillo_ubicacion">Pasillo de Ubicación</label>
+          <input 
+            type="text" 
+            id="pasillo_ubicacion" 
+            [(ngModel)]="inventarioActual.pasillo_ubicacion" 
+            name="pasillo_ubicacion" 
+            required 
+            placeholder="Ej. Pasillo 3 - Sección B">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar Inventario</button>
+      </div>
+    </form>
+  </div>
+
+</div>
