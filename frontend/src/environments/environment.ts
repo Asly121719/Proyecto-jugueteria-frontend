@@ -1,4 +1,4 @@
 export const environment = {
-  production: false,
-  apiUrl: 'http://127.0.0.1:8000' // La URL local de tu backend en FastAPI
+  production: true,
+  apiUrl: 'https://proyecto-jugueteria-backend.onrender.com'
 };
