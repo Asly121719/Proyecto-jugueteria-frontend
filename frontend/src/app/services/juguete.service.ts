@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment';
 export interface Juguete {
   id_juguete?: string;
   id_categoria: string;
@@ -14,8 +14,7 @@ export interface Juguete {
   providedIn: 'root'
 })
 export class JugueteService {
-  private apiUrl = 'http://localhost:8000/juguetes';
-
+ private apiUrl = `${environment.apiUrl}/juguetes`;
   constructor(private http: HttpClient) {}
 
   getJuguetes(): Observable<Juguete[]> {

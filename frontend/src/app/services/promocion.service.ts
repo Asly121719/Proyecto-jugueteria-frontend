@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment';
 export interface Promocion {
   id_promocion?: string;
   nombre_campana: string;
@@ -14,7 +14,7 @@ export interface Promocion {
   providedIn: 'root'
 })
 export class PromocionService {
-  private apiUrl = 'http://localhost:8000/promociones';
+  private apiUrl = `${environment.apiUrl}/promociones`;
 
   constructor(private http: HttpClient) {}
 
