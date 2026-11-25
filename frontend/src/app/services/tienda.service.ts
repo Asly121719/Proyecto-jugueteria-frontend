@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment';
 export interface Tienda {
   id_tienda?: string;
   nombre_sucursal: string;
@@ -14,8 +14,7 @@ export interface Tienda {
   providedIn: 'root'
 })
 export class TiendaService {
-  private apiUrl = 'http://localhost:8000/tiendas';
-
+  private apiUrl = `${environment.apiUrl}/tiendas`;
   constructor(private http: HttpClient) {}
 
   getTiendas(): Observable<Tienda[]> {

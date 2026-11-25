@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment';
 export interface InventarioTienda {
   id_inventario?: string;
   id_tienda: string;
@@ -14,7 +14,7 @@ export interface InventarioTienda {
   providedIn: 'root'
 })
 export class InventarioService {
-  private apiUrl = 'http://localhost:8000/inventario/'; // 👈 URL según el Swagger
+  private apiUrl = `${environment.apiUrl}/inventario`;
 
   constructor(private http: HttpClient) {}
 
