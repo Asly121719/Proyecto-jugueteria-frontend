@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment';
 export interface Proveedor {
   id_proveedor?: string;
   razon_social: string;
@@ -14,7 +14,7 @@ export interface Proveedor {
   providedIn: 'root'
 })
 export class ProveedorService {
-  private apiUrl = 'http://localhost:8000/proveedores';
+  private apiUrl = `${environment.apiUrl}/proovedores`;
 
   constructor(private http: HttpClient) {}
 

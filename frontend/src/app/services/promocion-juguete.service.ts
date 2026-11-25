@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment';
 export interface PromocionJuguete {
   id_promocion_juguete?: string; // Por si tu base de datos genera un ID propio
   id_promocion: string;
@@ -13,7 +13,7 @@ export interface PromocionJuguete {
 })
 export class PromocionJugueteService {
   // Ajusta aquí la ruta exacta que te indique tu Swagger de FastAPI (ej: '/promocion-juguetes' o '/promociones-juguetes')
- private apiUrl = ' http://localhost:8000/promocion-juguetes';
+ private apiUrl = `${environment.apiUrl}/promocion-juguetes`;
 
   constructor(private http: HttpClient) {}
 
