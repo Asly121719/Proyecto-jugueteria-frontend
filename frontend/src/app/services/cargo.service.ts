@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../environments/environment';
 export interface Cargo {
   id_cargo?: string;
   titulo_cargo: string;
@@ -14,7 +14,7 @@ export interface Cargo {
   providedIn: 'root'
 })
 export class CargoService {
-  private apiUrl = 'http://localhost:8000/cargos';
+  private apiUrl = `${environment.apiUrl}/cargos`;
 
   constructor(private http: HttpClient) {}
 
